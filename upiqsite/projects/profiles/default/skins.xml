@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="portal_skins">
+ <object name="qi_plone4_overrides"
+     meta_type="Filesystem Directory View"
+     directory="Products.qi:skins/qi_plone4_overrides"/>
+ <skin-path name="Sunburst Theme">
+  <layer name="qi_plone4_overrides" insert-after="custom" />
+ </skin-path>
+</object>
