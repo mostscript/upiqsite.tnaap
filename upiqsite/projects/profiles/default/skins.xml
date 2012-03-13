@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <object name="portal_skins">
- <object name="qi_plone4_overrides"
+ <object name="upiqsite_projects"
      meta_type="Filesystem Directory View"
-     directory="Products.qi:skins/qi_plone4_overrides"/>
+     directory="upiqsite.projects:skins/upiqsite_projects"/>
  <skin-path name="Sunburst Theme">
-  <layer name="qi_plone4_overrides" insert-after="custom" />
+  <layer name="upiqsite_projects" insert-after="custom" />
  </skin-path>
 </object>
