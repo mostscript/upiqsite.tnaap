@@ -16,4 +16,11 @@
   <!-- include Generic Setup extension profiles -->
   <include file="profiles.zcml" />
 
+  <!-- site style sheet -->
+  <browser:resource
+    name="upiq_projects_site.css"
+    file="upiq_projects_site.css"
+    layer="upiqsite.projects.interfaces.IUPIQProjectsSiteProductLayer"
+    />
+
 </configure>
