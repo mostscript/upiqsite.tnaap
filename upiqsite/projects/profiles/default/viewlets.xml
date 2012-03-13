@@ -1,22 +1,6 @@
 <?xml version="1.0"?>
 <object>
-  <!-- hide these viewlets: -->
-  <hidden manager="plone.portalheader" skinname="Plone Default">
-    <viewlet name="plone.skip_links"/>
-    <!-- for Plone 4: hide language selector from portalheader -->
-    <viewlet name="plone.app.i18n.locales.languageselector"/>
-  </hidden>
-  <hidden manager="plone.portaltop" skinname="Plone Default">
-    <!-- for Plone 4: hide path_bar from portaltop, since
-         Products.qi registers it here, but Products.CMFPlone
-         now registers in new plone.abovecontent manager, which
-         is non-sequitur to Plone 3.  Goal: keep as much Python
-         and ZCML Plone-version-agnostic, and deal with differences
-         in profile setup xml like this... -->
-    <viewlet name="plone.path_bar" />
-  </hidden>
-  <!-- hide stock Plone colophon, footer viewlets since
-       Products.qi defines suitable replacements -->
+  <!-- hide stock colophon, footer viewlets -->
   <hidden manager="plone.portalfooter" skinname="Plone Default">
     <viewlet name="plone.footer" />
     <viewlet name="plone.colophon" />
