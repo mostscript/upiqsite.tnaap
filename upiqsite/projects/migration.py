@@ -540,6 +540,50 @@ def fix_inconsistent_userinfo(site):
                            'for %s' % userid)
 
 
+def fix_resource_registry_entries(portal):
+    resources_to_remove = { 
+        'portal_javascripts' : ('++resource++qisite-loadmenu.js',),
+        'portal_css'         : ( 
+            '++resource++qisite-accordion.css',     # from uu.qisite
+            'qiCustom.css',                         # from Products.qi
+            ),  
+        }   
+    
+    # work around https://dev.plone.org/ticket/12147 -- make sure
+    # plone.app.jquerytools resources that we rely on, but are not
+    # enabled by default, are enabled:
+    ensure_enabled = { 
+        'portal_javascripts' : ( 
+            '++resource++plone.app.jquerytools.dateinput.js',
+            '++resource++plone.app.jquerytools.validator.js',
+            ),  
+        'portal_css'         : ( 
+            '++resource++plone.app.jquerytools.dateinput.css',
+            ),  
+        }   
+            
+    for registry_name, entries in resources_to_remove.items():
+        registry = portal[registry_name]
+        for entry in entries:
+            if entry in registry.getResourceIds():
+                registry.unregisterResource(entry)
+                assert entry not in registry.getResourceIds()
+                MIGRATION_LOG.info('Removed "%s" resource in %s registry' % (
+                    entry, registry_name,
+                    )),
+        
+    for registry_name, entries in ensure_enabled.items():
+        registry = portal[registry_name]
+        for entry in entries:
+            assert entry in registry.getResourceIds()
+            resource = registry.getResource(entry)
+            resource.setEnabled(True)
+            MIGRATION_LOG.info('Enabled "%s" resource in %s registry' % (
+                entry, registry_name,
+                )),
+            assert resource.getEnabled() == True
+
+
 def migrate_site(site):
     catalog = getToolByName(site, 'portal_catalog')
     _objectfor = lambda brain: brain._unrestrictedGetObject()
@@ -549,6 +593,9 @@ def migrate_site(site):
             site.getId(),
             )
         )
+    ## fix resource registry entries (CSS, JS) removing old stuff, working
+    ## around plone bug #12147:
+    fix_resource_registry_entries(portal)
     ## up-front, deal with any inconsistent user logins
     fix_inconsistent_userinfo(site)
     ## migrate site root and acl_users:
