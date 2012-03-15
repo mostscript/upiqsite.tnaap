@@ -540,7 +540,7 @@ def fix_inconsistent_userinfo(site):
                            'for %s' % userid)
 
 
-def fix_resource_registry_entries(portal):
+def fix_resource_registry_entries(site):
     resources_to_remove = { 
         'portal_javascripts' : ('++resource++qisite-loadmenu.js',),
         'portal_css'         : ( 
@@ -563,7 +563,7 @@ def fix_resource_registry_entries(portal):
         }   
             
     for registry_name, entries in resources_to_remove.items():
-        registry = portal[registry_name]
+        registry = site[registry_name]
         for entry in entries:
             if entry in registry.getResourceIds():
                 registry.unregisterResource(entry)
@@ -573,7 +573,7 @@ def fix_resource_registry_entries(portal):
                     )),
         
     for registry_name, entries in ensure_enabled.items():
-        registry = portal[registry_name]
+        registry = site[registry_name]
         for entry in entries:
             assert entry in registry.getResourceIds()
             resource = registry.getResource(entry)
@@ -595,7 +595,7 @@ def migrate_site(site):
         )
     ## fix resource registry entries (CSS, JS) removing old stuff, working
     ## around plone bug #12147:
-    fix_resource_registry_entries(portal)
+    fix_resource_registry_entries(site)
     ## up-front, deal with any inconsistent user logins
     fix_inconsistent_userinfo(site)
     ## migrate site root and acl_users:
