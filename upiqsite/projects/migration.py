@@ -640,7 +640,7 @@ def not_yet_migrated(site):
         unwrapped = aq_base(project)
         if hasattr(unwrapped, 'dbid') or hasattr(unwrapped, 'managers'):
             return True  # old attributes
-        if hasattr(unwrapped, '_objects'):
+        if not hasattr(unwrapped, '_tree'):
             return True  # unmigrated folder contents
     return False
 
