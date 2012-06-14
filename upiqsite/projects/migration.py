@@ -392,6 +392,8 @@ def migrate_project(project, version=2):
     fix_local_roles(project)
     # Add UUIDs to project object
     uuid_annotate(project)
+    # reindex
+    project.reindexObject()
     # Mark project._p_changed=True to ensure changes flushed at commit time
     mark_changed(project)
 
