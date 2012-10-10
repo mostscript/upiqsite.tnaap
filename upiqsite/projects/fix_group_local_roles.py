@@ -113,12 +113,16 @@ def fix_workspace_roles(site):
             logger.info('Found owner-less workspace, made admin owner: %s' % (
                 path,))
             workspace.__ac_local_roles__[u'admin'] = ['Owner']
-        txn = transaction.get()
-        txn.note(path)
-        txn.note('Removed local roles from workspace %s for %s' % (
-            workspace.getId(), tuple(set(_removed))))
-        txn.commit()
-        logger.info('-- TRANSACTION COMMIT --')
+            workspace._p_changed = True
+        if _removed:
+            workspace._p_changed = True
+        if workspace._p_changed:
+            txn = transaction.get()
+            txn.note(path)
+            txn.note('Removed local roles from workspace %s for %s' % (
+                workspace.getId(), tuple(set(_removed))))
+            txn.commit()
+            logger.info('-- TRANSACTION COMMIT --')
     
     logger.info('\n-----\nVERIFICATION PHASE\n-----')
     for workspace in spaces:
