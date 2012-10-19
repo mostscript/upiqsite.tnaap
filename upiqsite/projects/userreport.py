@@ -22,16 +22,28 @@ _utf8 = lambda v: v.encode('utf-8') if isinstance(v, unicode) else v
 _mkvocab = lambda seq: SimpleVocabulary([SimpleTerm(t) for t in seq])
 
 
+# site order matters, first breaks ties on same project name!
 SITES = (
+    'cnhnqi',
     'qiteamspace',
     'opip',
     )
 
+# ignored users are typically site-testing users of project managers
+# who have other primary userid/email identification we care about
+# reporting on without duplication.
 USER_IGNORE = (
+    # UPIQ:
     'sdupton@gmail.com',
     'snaeole@llu.edu',
     'snaeole@hotmail.com',
     'snaeole@gwu.edu',
+    # OPIP:
+    'ross8305@gmail.com',
+    'ktconner3@yahoo.com',
+    # CNHNQI:
+    'tamaranjohn@yahoo.com',
+    'tamaranjohn@gmail.com',
     )
 
 ignore_user = lambda u: 'hsc.utah.edu' in str(u) or u in USER_IGNORE
