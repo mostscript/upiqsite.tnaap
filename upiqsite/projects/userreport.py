@@ -1,19 +1,16 @@
 import csv
 import os
 from datetime import date, timedelta
-from StringIO import StringIO
 
 from zope.component.hooks import setSite
 from zope.interface import Interface, implements
 from zope import schema
-from zope.schema import getFieldNamesInOrder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from AccessControl.SecurityManagement import newSecurityManager
 from Products.CMFCore.utils import getToolByName
 
 from uu.qiext.interfaces import IProjectContext, IWorkspaceContext
 from uu.qiext.user.interfaces import IWorkspaceRoster
-from upiqsite.projects.migration import not_yet_migrated, migrate_site
 
 
 _u = lambda v: v.decode('utf-8') if isinstance(v, str) else unicode(v)
@@ -46,9 +43,12 @@ USER_IGNORE = (
     'tamaranjohn@gmail.com',
     )
 
+
 ignore_user = lambda u: 'hsc.utah.edu' in str(u) or u in USER_IGNORE
 
+#DIRNAME = 'usage_data_folder'
 DIRNAME = '/var/www/usage'
+
 
 MONTHS = {
     1: 'January',
@@ -73,10 +73,11 @@ class IProjectSnapshot(Interface):
         vocabulary=_mkvocab(MONTHS.values()),
         )
     date = schema.Date()
-    users = schema.Int(constraint=lambda v: v >= 0)
-    managers = schema.Int(constraint=lambda v: v >= 0)
-    form_users = schema.Int(constraint=lambda v: v>=0)
-    teams = schema.Int(constraint=lambda v: v >= 0)
+    all_users = schema.Set()
+    managers = schema.Set()
+    form_users = schema.Set()
+    project_count = schema.Int(constraint=lambda v: v >= 0)
+    team_count = schema.Int(constraint=lambda v: v >= 0)
 
 
 class ProjectSnapshot(object):
@@ -87,6 +88,11 @@ class ProjectSnapshot(object):
     
     def __init__(self, **kwargs):
         
+        # initially empty sets for users, can be intersected later
+        self.all_users = set()
+        self.other_users = set()
+        self.managers = set()
+        self.form_users = set()
         for k, v in kwargs.items():
             if k in self.NAMES:
                 IProjectSnapshot[k].validate(v)
@@ -113,8 +119,8 @@ def all_workspaces(project):
     """
     catalog = getToolByName(project, 'portal_catalog')
     r = catalog.search({
-        'portal_type' : ('qiteam', 'qisubteam', 'qiproject'),
-        'path' : {'query': '/'.join(project.getPhysicalPath())},
+        'portal_type': ('qiteam', 'qisubteam', 'qiproject'),
+        'path': {'query': '/'.join(project.getPhysicalPath())},
         })
     workspaces = map(lambda b: b._unrestrictedGetObject(), r)
     return workspaces
@@ -130,15 +136,26 @@ def form_users(workspace):
 
 def merged_form_users(project):
     """
-    Given a project, get de-duped set of form users from all 
+    Given a project, get de-duped set of form users from all
     contained workspaces, not including managers at root of the
     project.
     """
     workspaces = all_workspaces(project)
     _form_users = [form_users(w) for w in workspaces]
-    merged = set(reduce(lambda a,b: set(a)|set(b), _form_users))
+    merged = set(reduce(lambda a, b: set(a) | set(b), _form_users))
     exclude = set(IWorkspaceRoster(project).groups['managers'].keys())
     return list(merged - exclude)
+
+
+def other_users(project):
+    """
+    Given project, get de-duped list of users who are neither form
+    users nor project managers.
+    """
+    form_users = set(merged_form_users(project))
+    managers = set(IWorkspaceRoster(project).groups['managers'].keys())
+    all_users = set(IWorkspaceRoster(project).keys())
+    return ((all_users - managers) - form_users)
 
 
 def filtered_users(c):
@@ -147,6 +164,13 @@ def filtered_users(c):
     users.
     """
     return [u for u in c if not ignore_user(u)]
+
+
+def output_value(k, v):
+    """Given key and value k, v -- normalize output value for CSV"""
+    if isinstance(v, set):
+        v = len(v)  # output the count, not sequence/set
+    return _utf8(v)
 
 
 def report_main(site, datestamp):
@@ -159,21 +183,52 @@ def report_main(site, datestamp):
     catalog = getToolByName(site, 'portal_catalog')
     r = catalog.search({'object_provides': IProjectContext.__identifier__})
     projects = [brain._unrestrictedGetObject() for brain in r]
-    outputs = {}
     if not os.path.isdir(DIRNAME):
         os.mkdir(DIRNAME)
+    columns = (
+        'month',
+        'date',
+        'all_users',
+        'managers',
+        'form_users',
+        'other_users',
+        'project_count',
+        'team_count',
+        )
+    sitesnap = ProjectSnapshot(
+        name='site-%s' % site.getId(),
+        title=_u(site.Title()),
+        date=datestamp,
+        month=MONTHS.get(datestamp.month),
+        )
+    sitesnap.project_count = 0
+    sitesnap.team_count = 0
+    site_filename = os.path.join(DIRNAME, '%s.csv' % sitesnap.name)
+    if os.path.exists(site_filename):
+        out = open(site_filename, 'r')
+        data = out.readlines()
+        out.close()
+        if any([(str(datestamp) in line) for line in data]):
+            return  # already have site report for date, done with this site
+        site_out = open(site_filename, 'a')  # append to EOF
+    else:
+        site_out = open(site_filename, 'w')  # will create
+        site_out.write('%s\n' % ','.join(columns))  # new file, ergo headings
     for project in projects:
-        filename = os.path.join(DIRNAME, '%s.csv' % project.getId())
-        columns = ('month', 'date', 'users', 'managers', 'teams', 'form_users')
-        if os.path.exists(filename):
-            out = open(filename, 'r')
+        sitesnap.project_count += 1
+        proj_filename = os.path.join(DIRNAME, '%s-%s.csv' % (
+            site.getId(),
+            project.getId(),
+            ))
+        if os.path.exists(proj_filename):
+            out = open(proj_filename, 'r')
             data = out.readlines()  # existing data in file
             out.close()
             if any([(str(datestamp) in line) for line in data]):
                 continue  # don't duplicate entry for date if already in file
-            out = open(filename, 'a')  # append to EOF
+            out = open(proj_filename, 'a')  # append to EOF
         else:
-            out = open(filename, 'w')  # will create
+            out = open(proj_filename, 'w')  # will create
             out.write('%s\n' % ','.join(columns))  # new file, ergo headings
         writer = csv.DictWriter(out, columns, extrasaction='ignore')
         roster = IWorkspaceRoster(project)
@@ -181,26 +236,46 @@ def report_main(site, datestamp):
             name=project.getId(),
             title=_u(project.Title()),
             )
+        snapshot.project_count = 1
         snapshot.date = datestamp
         snapshot.month = MONTHS.get(datestamp.month)
-        snapshot.users = len(filtered_users(roster))
-        snapshot.managers = len(
+        snapshot.all_users = set(filtered_users(roster))
+        sitesnap.all_users = sitesnap.all_users.union(snapshot.all_users)
+        snapshot.other_users = set(filtered_users(other_users(project)))
+        sitesnap.other_users = sitesnap.other_users.union(snapshot.other_users)
+        snapshot.managers = set(
             filtered_users(
                 roster.groups['managers'].keys()
                 )
             )
-        snapshot.form_users = len(
+        sitesnap.managers = sitesnap.managers.union(snapshot.managers)
+        snapshot.form_users = set(
             filtered_users(
                 merged_form_users(project)
                 )
             )
+        sitesnap.form_users = sitesnap.form_users.union(snapshot.form_users)
         teams = [o for o in project.contentValues()
-                    if IWorkspaceContext.providedBy(o)]
-        snapshot.teams = len(teams)
+                 if IWorkspaceContext.providedBy(o)]
+        snapshot.team_count = len(teams)
+        sitesnap.team_count += snapshot.team_count
         # write row to CSV from snapshot, convert unicode to utf-8 as needed
         writer.writerow(
-            dict([(k,_utf8(v)) for k,v in snapshot.__dict__.items()]))
+            dict([(k, output_value(k, v))
+                  for k, v in snapshot.__dict__.items()]))
         out.close()
+    
+    # now normalize site-wide users for greatest role... if a user is manager
+    # in project A, do not include them in form users just because they have
+    # form user role in project B:
+    sitesnap.form_users = sitesnap.form_users - sitesnap.managers
+    sitesnap.other_users = (sitesnap.other_users - sitesnap.managers) - (
+        sitesnap.form_users)
+    
+    site_writer = csv.DictWriter(site_out, columns, extrasaction='ignore')
+    site_writer.writerow(
+        dict([(k, output_value(k, v)) for k, v in sitesnap.__dict__.items()]))
+    site_out.close()
 
 
 def main(app, datestamp=None, username='admin'):
@@ -216,10 +291,8 @@ def main(app, datestamp=None, username='admin'):
                 newSecurityManager(None, user)
                 break
         if user is None:
-            raise RuntimeError('Unable to obtain user for username %s' % username)
-        # 2012-03-15 migration; if not yet migrated (pre March 15), migrate.
-        if sitename=='qiteamspace' and not_yet_migrated(site):
-            migrate_site(site)
+            raise RuntimeError('Unable to obtain user for username %s' % (
+                username,))
         report_main(site, datestamp)
 
 
@@ -230,5 +303,5 @@ if 'app' in locals():
         datestamp = sys.argv[1]
         year, month, day = (datestamp[0:4], datestamp[5:7], datestamp[8:10])
         datestamp = date(*[int(v) for v in (year, month, day)])
-    main(app, datestamp)
+    main(app, datestamp)  # noqa
 
