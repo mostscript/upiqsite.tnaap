@@ -3,7 +3,7 @@
   <dependencies>
     <dependency>profile-uu.qiext:default</dependency>
     <dependency>profile-uu.formlibrary:default</dependency>
-    <dependency>profile-uu.inviting:default</dependency>
+    <dependency>profile-collective.inviting:default</dependency>
     <dependency>profile-uu.staticmap:default</dependency>
     <dependency>profile-uu.chart:default</dependency>
     <dependency>profile-Solgema.fullcalendar:default</dependency>
