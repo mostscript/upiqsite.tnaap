@@ -1,5 +1,6 @@
 import csv
 import os
+import re
 from datetime import date, timedelta
 
 from zope.component.hooks import setSite
@@ -296,12 +297,19 @@ def main(app, datestamp=None, username='admin'):
         report_main(site, datestamp)
 
 
+def normalized_date(value):
+    value = str(value).strip()
+    match = lambda v: re.compile('^[0-9]{4}-[0-9]{2}-[0-9]{2}$').search(v)
+    if match(value):
+        year, month, day = (value[0:4], value[5:7], value[8:10])
+        return date(*[int(v) for v in (year, month, day)])
+    return date.today()  # default
+
+
 if 'app' in locals():
     import sys
     datestamp = date.today()
     if len(sys.argv) > 1:
-        datestamp = sys.argv[1]
-        year, month, day = (datestamp[0:4], datestamp[5:7], datestamp[8:10])
-        datestamp = date(*[int(v) for v in (year, month, day)])
+        datestamp = normalized_date(sys.argv[-1])
     main(app, datestamp)  # noqa
 
