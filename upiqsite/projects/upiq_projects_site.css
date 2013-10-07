@@ -5,3 +5,10 @@
   max-height:480px;
 }
 
+#add-field {
+    margin-top:4em;
+}
+
+#add-fieldset input {
+    display:none !important;
+}
