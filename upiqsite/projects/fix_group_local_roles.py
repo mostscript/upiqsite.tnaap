@@ -40,7 +40,7 @@ def fix_workspace_roles(site):
     groups = IGroups(site)
     before_groups = len(groups)
     members = ISiteMembers(site)
-    spaces = map(_getobject, catalog.search({'portal_type': WORKSPACE_TYPES}))
+    spaces = map(_getobject, catalog.unrestrictedSearchResults({'portal_type': WORKSPACE_TYPES}))
     logger.info('  Checking %s workspaces' % len(spaces))
     for workspace in spaces:
         path = '/'.join(workspace.getPhysicalPath())
