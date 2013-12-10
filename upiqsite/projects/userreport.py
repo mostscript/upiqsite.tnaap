@@ -119,7 +119,7 @@ def all_workspaces(project):
     including project itself.
     """
     catalog = getToolByName(project, 'portal_catalog')
-    r = catalog.search({
+    r = catalog.unrestrictedSearchResults({
         'portal_type': ('qiteam', 'qisubteam', 'qiproject'),
         'path': {'query': '/'.join(project.getPhysicalPath())},
         })
@@ -182,7 +182,9 @@ def report_main(site, datestamp):
     month, date, project_name, #users, #managers, #teams, #forms.
     """
     catalog = getToolByName(site, 'portal_catalog')
-    r = catalog.search({'object_provides': IProjectContext.__identifier__})
+    r = catalog.unrestrictedSearchResults(
+        {'object_provides': IProjectContext.__identifier__}
+        )
     projects = [brain._unrestrictedGetObject() for brain in r]
     if not os.path.isdir(DIRNAME):
         os.mkdir(DIRNAME)

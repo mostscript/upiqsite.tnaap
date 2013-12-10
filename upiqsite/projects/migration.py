@@ -589,7 +589,7 @@ def fix_resource_registry_entries(site):
 def migrate_site(site):
     catalog = getToolByName(site, 'portal_catalog')
     _objectfor = lambda brain: brain._unrestrictedGetObject()
-    _typesearch = lambda v: catalog.search({'portal_type': v})
+    _typesearch = lambda v: catalog.unrestrictedSearchResults({'portal_type': v})
     MIGRATION_LOG.info(
         '-- STARTED MIGRATION FOR NOT YET MIGRATED SITE %s -- ' % (
             site.getId(),
@@ -636,7 +636,7 @@ def migrate_site(site):
 def not_yet_migrated(site):
     catalog = getToolByName(site, 'portal_catalog')
     _objectfor = lambda brain: brain._unrestrictedGetObject()
-    _typesearch = lambda v: catalog.search({'portal_type': v})
+    _typesearch = lambda v: catalog.unrestrictedSearchResults({'portal_type': v})
     projects = [_objectfor(brain) for brain in _typesearch('qiproject')]
     for project in projects:
         unwrapped = aq_base(project)
