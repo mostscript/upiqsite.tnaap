@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<import-steps>
-  <import-step id="projects_upiq_org_legacy_migration" version="20120215-01"
-               handler="upiqsite.projects.migration.install_migration"
-               title="One time migration from legacy Products.qi and uu.qisite setup to uu.qiext with upiqsite.projects policy product">
-  </import-step>
-</import-steps>
