@@ -25,6 +25,7 @@ SITES = (
     'cnhnqi',
     'qiteamspace',
     'opip',
+    'maine',
     )
 
 # ignored users are typically site-testing users of project managers
@@ -42,10 +43,13 @@ USER_IGNORE = (
     # CNHNQI:
     'tamaranjohn@yahoo.com',
     'tamaranjohn@gmail.com',
+    # MAINE:
+    'mainetesting@teamspace.mainequalitycounts.org',
     )
 
 
-ignore_user = lambda u: 'hsc.utah.edu' in str(u) or u in USER_IGNORE
+upiq_user = lambda u: 'hsc.utah.edu' in str(u) or 'upiq.org' in str(u)
+ignore_user = lambda u: upiq_user(u) or u in USER_IGNORE
 
 #DIRNAME = 'usage_data_folder'
 DIRNAME = '/var/www/usage'
