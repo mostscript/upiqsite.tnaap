@@ -6,6 +6,7 @@ site (not across).
 import sys
 import time
 
+from AccessControl.SecurityManagement import newSecurityManager
 import transaction
 from zope.component.hooks import setSite
 
@@ -31,10 +32,17 @@ def copypath(site, source, destination):
     print 'Transaction committed in %s seconds.' % time.time() - checktime
 
 
+def get_site(app, name):
+    """Get site, with local component context set, and security manager"""
+    site = app[sitename]
+    setSite(site)
+    user = app.acl_users.getUser('admin')
+    newSecurityManager(None, user)
+
+
 if __name__ == '__main__' and 'app' in locals():
     # all paths should be site-relative!
     sitename, sourcepath, destpath = sys.argv[:-3]
-    site = app[sitename]  # noqa
-    setSite(site)
+    site = get_site(app, sitename)  # noqa
     copypath(site, sourcepath, destpath)
 
