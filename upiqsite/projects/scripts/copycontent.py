@@ -25,11 +25,11 @@ def copypath(site, source, destination):
     start = time.time()
     copy(source, destination)
     checktime = time.time()
-    print 'Completed copy in %s seconds.' % checktime - start
+    print 'Completed copy in %s seconds.' % (checktime - start)
     txn = transaction.get()
     txn.note('Copied content from %s to %s' % paths)
     txn.commit()
-    print 'Transaction committed in %s seconds.' % time.time() - checktime
+    print 'Transaction committed in %s seconds.' % (time.time() - checktime)
 
 
 def get_site(app, name):
@@ -38,11 +38,12 @@ def get_site(app, name):
     setSite(site)
     user = app.acl_users.getUser('admin')
     newSecurityManager(None, user)
+    return site
 
 
 if __name__ == '__main__' and 'app' in locals():
     # all paths should be site-relative!
-    sitename, sourcepath, destpath = sys.argv[:-3]
+    sitename, sourcepath, destpath = sys.argv[-3:]
     site = get_site(app, sitename)  # noqa
     copypath(site, sourcepath, destpath)
 
