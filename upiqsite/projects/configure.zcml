@@ -8,6 +8,8 @@
   <!-- Include configuration for dependencies listed in setup.py -->
   <includeDependencies package="." />
 
+  <include package="five.pt" />
+
   <!-- Grok package: initialise schema interfaces, content classes -->
   <grok:grok package="." />
 

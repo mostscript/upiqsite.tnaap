@@ -34,6 +34,7 @@ setup(name='upiqsite.projects',
           'Products.qi',
           'Products.CMFPlone',
           'plone.browserlayer',
+          'five.pt',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
