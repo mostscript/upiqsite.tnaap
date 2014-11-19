@@ -10,6 +10,11 @@
 
   <include package="five.pt" />
 
+  <!-- template overrides, include layer only if specific to site -->
+  <include package="z3c.jbot" file="meta.zcml" />
+
+  <browser:jbot directory="template/global-overrides" />
+
   <!-- Grok package: initialise schema interfaces, content classes -->
   <grok:grok package="." />
 

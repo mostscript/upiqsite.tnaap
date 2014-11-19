@@ -34,6 +34,7 @@ setup(name='upiqsite.projects',
           'Products.qi',
           'Products.CMFPlone',
           'plone.browserlayer',
+          'z3c.jbot',
           'five.pt',
           # -*- Extra requirements: -*-
       ],
