@@ -30,26 +30,26 @@ SITES = (
 
 # ignored users are typically site-testing users of project managers
 # who have other primary userid/email identification we care about
-# reporting on without duplication.
+# reporting on without duplication.  Match on substring of email address:
 USER_IGNORE = (
     # UPIQ:
-    'sdupton@gmail.com',
-    'snaeole@llu.edu',
-    'snaeole@hotmail.com',
-    'snaeole@gwu.edu',
+    'sdupton',
+    'snaeole',
+    'homa.rehmani',
     # OPIP:
-    'ross8305@gmail.com',
-    'ktconner3@yahoo.com',
+    'ross8305',
+    'ktconner3',
     # CNHNQI:
-    'tamaranjohn@yahoo.com',
-    'tamaranjohn@gmail.com',
+    'tamaranjohn',
     # MAINE:
     'mainetesting@teamspace.mainequalitycounts.org',
     )
 
 
 upiq_user = lambda u: 'hsc.utah.edu' in str(u) or 'upiq.org' in str(u)
-ignore_user = lambda u: upiq_user(u) or u in USER_IGNORE
+_ignore_user = lambda u: any(map(lambda substr: substr in u, USER_IGNORE))
+ignore_user = lambda u: upiq_user(u) or _ignore_user(u)
+
 
 #DIRNAME = 'usage_data_folder'
 DIRNAME = '/var/www/usage'
