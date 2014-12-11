@@ -1,3 +1,5 @@
+import time
+
 from Acquisition import aq_base
 import transaction
 from zope.component.hooks import setSite
@@ -178,19 +180,37 @@ def pre_install_cleanups(site):
         )
 
 
+def stamp(start, last):
+    now = time.time()
+    since_start = now - start
+    since_last = now - last
+    print '\t\t Step completed: %.0f seconds (%.0f since start)' % (
+        since_last,
+        since_start,
+        )
+    return now
+
+
 def migrate(site):
+    last = start = time.time()
     print '\t-- Pre-site cleanups (PAS)'
     pre_install_cleanups(site)
+    last = stamp(start, last)
     print '\t-- Installing collective.teamwork'
     install_teamwork_addon(site)
+    last = stamp(start, last)
     print '\t-- Updating content state (portal_type and workflow_history)'
     update_content_state(site)
+    last = stamp(start, last)
     print '\t-- Uninstalling old products'
     uninstall_old_products(site)
+    last = stamp(start, last)
     print '\t-- Reindexing portal_catalog'
     reindex_catalog(site)
+    last = stamp(start, last)
     print '\t-- Committing transaction'
-    # commit(site, 'Migrated site from uu.qiext to collective.teamwork')
+    commit(site, 'Migrated site from uu.qiext to collective.teamwork')
+    last = stamp(start, last)
 
 
 def main(app):
@@ -199,6 +219,7 @@ def main(app):
             print '== MIGRATING SITE: %s ==' % site.getId()
             setSite(site)
             migrate(site)
+            app._p_jar.cacheMinimize()
 
 
 if __name__ == '__main__' and 'app' in locals():
