@@ -81,14 +81,18 @@ def get_workspaces(site):
 
 
 def update_content_state(site):
-    for workspace in get_workspaces(site):
+    workspaces = get_workspaces(site)
+    for workspace in workspaces:
         content = aq_base(workspace)
         update_portal_type(content)
         update_workflow_history(content)
+    return workspaces
 
 
-def reindex_catalog(site):
-    site.portal_catalog.clearFindAndRebuild()
+def reindex_catalog(site, workspaces):
+    #site.portal_catalog.clearFindAndRebuild()
+    for workspace in workspaces:
+        workspace.reindexObject()
 
 
 def remove_browserlayer(site, name):
@@ -191,22 +195,36 @@ def stamp(start, last):
     return now
 
 
+def workflow_history_update(site):
+    counter = 0
+    for brain in site.portal_catalog.unrestrictedSearchResults({}):
+        content = aq_base(brain._unrestrictedGetObject())
+        if getattr(content, 'workflow_history', None) is not None:
+            update_workflow_history(content)
+            counter += 1
+        if counter % 3000 == 0:
+            site._p_jar.cacheMinimize()
+
+
 def migrate(site):
     last = start = time.time()
     print '\t-- Pre-site cleanups (PAS)'
     pre_install_cleanups(site)
     last = stamp(start, last)
+    print '\t-- Uninstalling old products'
+    uninstall_old_products(site)
+    last = stamp(start, last)
     print '\t-- Installing collective.teamwork'
     install_teamwork_addon(site)
     last = stamp(start, last)
     print '\t-- Updating content state (portal_type and workflow_history)'
-    update_content_state(site)
-    last = stamp(start, last)
-    print '\t-- Uninstalling old products'
-    uninstall_old_products(site)
+    workspaces = update_content_state(site)
     last = stamp(start, last)
     print '\t-- Reindexing portal_catalog'
-    reindex_catalog(site)
+    reindex_catalog(site, workspaces)
+    last = stamp(start, last)
+    print '\t-- Updating workflow history content state in ALL site content.'
+    workflow_history_update(site)
     last = stamp(start, last)
     print '\t-- Committing transaction'
     commit(site, 'Migrated site from uu.qiext to collective.teamwork')
