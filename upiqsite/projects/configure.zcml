@@ -8,16 +8,6 @@
   <!-- Include configuration for dependencies listed in setup.py -->
   <includeDependencies package="." />
 
-  <include package="five.pt" />
-
-  <!-- template overrides, include layer only if specific to site -->
-  <include package="z3c.jbot" file="meta.zcml" />
-
-  <browser:jbot directory="template/global-overrides" />
-
-  <!-- Grok package: initialise schema interfaces, content classes -->
-  <grok:grok package="." />
-
   <five:registerPackage package="." initialize=".zope2.initialize" />
 
   <!-- include Generic Setup extension profiles -->

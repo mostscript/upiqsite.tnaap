@@ -1,14 +1,2 @@
 /* Site policy styles for: projects.upiq.org */
 
-#content a.video {
-  max-width:640px;
-  max-height:480px;
-}
-
-#add-field {
-    margin-top:4em;
-}
-
-#add-fieldset input {
-    display:none !important;
-}

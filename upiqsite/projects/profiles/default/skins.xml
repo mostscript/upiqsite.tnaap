@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<object name="portal_skins">
- <object name="upiqsite_projects"
-     meta_type="Filesystem Directory View"
-     directory="upiqsite.projects:skins/upiqsite_projects"/>
- <skin-path name="Sunburst Theme">
-  <layer name="upiqsite_projects" insert-after="custom" />
- </skin-path>
-</object>
