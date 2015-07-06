@@ -3,9 +3,9 @@ from setuptools import setup, find_packages
 version = '0.1'
 
 setup(
-    name='upiqsite.projects',
+    name='upiqsite.tnaap',
     version=version,
-    description='Policy product for Teamspace for projects.upiq.org',
+    description='Policy product for Teamspace for teamspace.tnaap.org',
     long_description=(
         open("README.rst").read(),
         ),

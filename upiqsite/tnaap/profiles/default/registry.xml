@@ -39,7 +39,7 @@
       <title xmlns:ns0="http://xml.zope.org/namespaces/i18n" ns0:domain="plone.app.event" ns0:translate="">Portal default timezone</title>
       <vocabulary>plone.app.event.Timezones</vocabulary>
     </field>
-    <value>US/Mountain</value>
+    <value>US/Central</value>
   </record>
   <record name="plone.cachepurging.interfaces.ICachePurgingSettings.domains" interface="plone.cachepurging.interfaces.ICachePurgingSettings" field="domains">
     <field type="plone.registry.field.Tuple">
@@ -51,8 +51,7 @@
       <value_type type="plone.registry.field.URI"/>
     </field>
     <value>
-      <element>https://projects.upiq.org:443</element>
-      <element>https://partners.upiq.org:443</element>
+      <element>https://teamspace.tnaap.org:443</element>
     </value>
   </record>
 </registry>

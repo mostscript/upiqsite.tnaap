@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <object name="portal_css" meta_type="Stylesheets Registry">
   <stylesheet
-    id="++resource++upiq_projects_site.css"
-    title="upiq_projects_site.css"
+    id="++resource++tnaap_site.css"
+    title="tnaap_site.css"
     cacheable="True"
     compression="safe"
     cookable="True"

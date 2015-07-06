@@ -1,0 +1,6 @@
+<?xml version="1.0"?>    
+<layers> 
+  <layer name="upiqsite.tnaap" 
+         interface="upiqsite.tnaap.interfaces.ITNAAPSiteProductLayer" /> 
+</layers>
+
