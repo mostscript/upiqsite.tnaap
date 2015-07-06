@@ -3,32 +3,38 @@ title: TNAAP TeamSpace Collaboration Site
 description: Welcome to the TeamSpace collaboration site for the Tennessee Chapter of the American Academy of Pediatrics
 Content-Type: text/html
 
+<h3><br /></h3>
+
 <h3><em>Project Members:</em></h3>
 <p class="callout">
-  <b>
-    Please click the log-in link on the upper right to log in to your
-    project(s).
-  </b>
+    <b> Please click the log-in link on the upper right to log in to your project(s). </b>
+    <img src="logo.png" style="float:right; " />
 </p>
+
+<h3><br /></h3>
+<h3><br /></h3>
 
 <h3><em>QI TeamSpace:</em></h3>
 <p class="callout">
-  <b>
-    The  Tennessee Chapter of the American Academy of Pediatrics (<a href="http://www.tnaap.org" target="_blank">TNAAP</a>)
-    and its stakeholders use this site to facilitate online collaboration,
-    resource sharing, and data collection related to the various quality
-    improvement projects.
-  </b>
-  <img src="./logo.png" style="float:right;" />
-</p>
+    <b> The Tennessee Chapter of the American Academy of Pediatrics 
+        (<a href="http://www.tnaap.org" target="_blank">TNAAP</a>)
+        and its stakeholders use this site to facilitate online
+        collaboration, resource sharing, and data collection related
+        to the various quality improvement projects. 
+    </b>
+    <img src="TNAAP-logo-550px8bit.png" style="float:left; " /> </p>
 
+<h3><br /></h3>
+<h3><br /></h3>
+<h3><br /></h3>
 <h3><em>Questions?</em></h3>
 <p class="callout">
-  <b>
-    If you have questions about QI Teamspace, please contact project staff by
-    e-mail at <a href="mailto:info@tnaap.org">info@tnaap.org</a>.
-    <br /><br />
-    For more information about TNAAP, please visit <a href="http://www.tnaap.org" target="_blank">TNAAP's main site</a>.
-  </b>
+    <b>
+        If you have questions about QI Teamspace, please contact project staff 
+        by e-mail at <a href="mailto:info@tnaap.org">info@tnaap.org</a>.
+        <br /><br />
+        For more information about TNAAP, please visit 
+        <a href="http://www.tnaap.org" target="_blank">TNAAP's main site</a>.
+    </b>
 </p>
 
