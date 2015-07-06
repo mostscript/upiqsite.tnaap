@@ -1,0 +1,10 @@
+<object name="portal_skins">
+  <object
+    name="upiqsite_tnaap"
+    meta_type="Filesystem Directory View"
+    directory="upiqsite.tnaap:skins/upiqsite_tnaap"
+    />
+  <skin-path name="Sunburst Theme">
+    <layer name="upiqsite_tnaap" insert-after="custom" />
+  </skin-path>
+</object>
