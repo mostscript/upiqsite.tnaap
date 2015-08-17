@@ -1,2 +1,7 @@
 /* Site policy styles for: teamspace.tnaap.org */
 
+/* margin adjustment for 135px tall logo with its own whitespace within */
+#portal-header #portal-logo {
+  margin: -0.4em 0 0 0;
+}
+
