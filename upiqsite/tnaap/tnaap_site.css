@@ -2,6 +2,12 @@
 
 /* margin adjustment for 135px tall logo with its own whitespace within */
 #portal-header #portal-logo {
-  margin: -0.4em 0 0 0;
+  margin: 0 0 0.5em -0.2em;
+}
+
+@media (min-width: 1000px) {
+  #portal-header #portal-logo {
+    margin: 0 0 -1em -0.3em;
+  }
 }
 
