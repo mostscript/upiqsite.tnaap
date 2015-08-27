@@ -11,3 +11,49 @@
   }
 }
 
+/* Chart review form styles: */
+
+.singlerowform .fielddiv.divider {
+  background-color:#f7931e;
+}
+
+.meta-footer .meta-toggle {
+  background-color:#fde92d;
+}
+
+#formcore .formrows .rowcontrol {
+  background-color:#a6ce39;
+}
+
+.add-control #btn-addrow{
+  color:rgba(70, 165, 95, 1);
+}
+
+/* Navigation styles: */
+
+#portal-column-one .portletNavigationTree .portletItem .navTreeItem a,
+#portal-column-one .portletNavigationTree .portletItem .navTreeItem a.state-visible span {
+  color:black;
+  font-size:100%;
+  font-family:Arial Narrow, Arial;
+}
+
+#portal-column-one .portletNavigationTree .portletItem .navTreeItem a span {
+  padding-left:0.35em;
+}
+ 
+#portal-column-one dl.portletNavigationTree dd.portletItem ul.navTree li.navTreeCurrentNode a.navTreeCurrentItem,
+#portal-column-one dl.portletNavigationTree dd.portletItem ul.navTree li.navTreeTopNode a {
+  font-size:94%;
+  font-weight:bold;
+}
+
+#portal-column-one dl.portletNavigationTree dd.portletItem ul.navTree li.navTreeCurrentNode a.navTreeCurrentItem {
+  background-color:rgba(0,165,213,1);
+  border:1px solid rgba(0,165,213,0.5);
+}
+
+p.callout {
+  background-color:#f7931e !important;
+  border-left:1em solid #d85809 !important
+}
