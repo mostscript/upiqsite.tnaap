@@ -57,3 +57,8 @@ p.callout {
   background-color:#f7931e !important;
   border-left:1em solid #d85809 !important
 }
+
+table.listing th {
+  background-color:#a6ce39;
+  color:black;
+}
